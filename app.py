@@ -14,6 +14,8 @@ special_chars = ['ſ', 'ç', 'æ', 'œ']
 if "query" not in st.session_state:
     st.session_state.query = ""
 
+query = st.text_input("📝 Unesi izraz za pretraživanje:", value=st.session_state.query)
+
 # Prikaz specijalnih znakova za kopiranje:
 st.markdown("""
 **Specijalni znakovi za kopiranje:**
@@ -25,7 +27,7 @@ st.markdown("""
 _Pritisni Ctrl+C (ili Command+C) da ih kopiraš i zalijepiš u polje iznad._
 """)
 
-query = st.session_state.query
+# query je već definiran iznad putem text_input
 
 if st.button("Pretraži") and query:
     try:
