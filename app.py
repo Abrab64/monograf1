@@ -48,7 +48,7 @@ if st.button("Pretraži") and query:
                 return token
             left = " ".join(word_spans[i][0] for i in range(max(0, idx - context), idx))
             right = " ".join(word_spans[i][0] for i in range(idx + 1, min(len(word_spans), idx + 1 + context)))
-                        page_markers = list(re.finditer(r"/\d+/", full_text))
+                                page_markers = list(re.finditer(r"/\d+/", full_text))
             page = "?"
             for marker in reversed(page_markers):
                 if marker.start() < start:
