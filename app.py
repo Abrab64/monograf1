@@ -16,12 +16,13 @@ if "query" not in st.session_state:
 
 # Dodavanje posebnih znakova klikom
 def append_char(c):
-    st.session_state.query += c
+    current = st.session_state.get("query", "")
+    st.session_state.query = current + c
 
 col1, col2 = st.columns([3, 1])
 
 with col1:
-    st.text_area("📝 Unesi izraz za pretraživanje:", key="query")
+    st.text_area("📝 Unesi izraz za pretraživanje:", key="query", on_change=None)
 
 with col2:
     for char in special_chars:
