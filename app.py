@@ -4,7 +4,7 @@ st.set_page_config(page_title="Doslovno pretraživanje korpusa", layout="wide")
 st.title("🔎 Doslovno pretraživanje korpusa")
 
 st.markdown("""
-Unesi niz znakova točno onako kako se pojavljuje u korpusu. Možeš dodavati posebne znakove klikom ispod.
+Unesi niz znakova točno onako kako se pojavljuje u korpusu. Možeš dodavati posebne znakove kopiranjem ispod.
 """)
 
 # Specijalni znakovi iz prethodne analize (primjeri)
@@ -14,20 +14,16 @@ special_chars = ['ſ', 'ç', 'æ', 'œ']
 if "query" not in st.session_state:
     st.session_state.query = ""
 
-# Dodavanje posebnih znakova klikom
-def append_char(c):
-    current = st.session_state.get("query", "")
-    st.session_state.query = current + c
+# Prikaz specijalnih znakova za kopiranje:
+st.markdown("""
+**Specijalni znakovi za kopiranje:**
+- ſ
+- ç
+- æ
+- œ
 
-col1, col2 = st.columns([3, 1])
-
-with col1:
-    st.text_area("📝 Unesi izraz za pretraživanje:", key="query", on_change=None)
-
-with col2:
-    for char in special_chars:
-        if st.button(f"{char}", key=f"spec_{char}"):
-            append_char(char)
+_Pritisni Ctrl+C (ili Command+C) da ih kopiraš i zalijepiš u polje iznad._
+""")
 
 query = st.session_state.query
 
