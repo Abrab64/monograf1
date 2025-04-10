@@ -10,15 +10,25 @@ Unesi niz znakova točno onako kako se pojavljuje u korpusu. Možeš dodavati po
 # Specijalni znakovi iz prethodne analize (primjeri)
 special_chars = ['ſ', 'ç', 'æ', 'œ']
 
+# Inicijalizacija session_state za upit
+if "query" not in st.session_state:
+    st.session_state.query = ""
+
+# Dodavanje posebnih znakova klikom
+def append_char(c):
+    st.session_state.query += c
+
 col1, col2 = st.columns([3, 1])
 
 with col1:
-    query = st.text_input("📝 Unesi izraz za pretraživanje:", "")
+    st.text_area("📝 Unesi izraz za pretraživanje:", key="query")
 
 with col2:
     for char in special_chars:
         if st.button(f"{char}", key=f"spec_{char}"):
-            query += char
+            append_char(char)
+
+query = st.session_state.query
 
 if st.button("Pretraži") and query:
     try:
@@ -31,19 +41,25 @@ if st.button("Pretraži") and query:
         tokens = [(m.group(), m.start(), m.end()) for m in re.finditer(r'\S+', corpus)]
         matches = [(tok, s, e) for tok, s, e in tokens if query in tok]
 
-        def get_kwic(token_span, word_spans, context=3):
+        def get_kwic(token_span, word_spans, context=3, full_text=""):
             token, start, end = token_span
             idx = next((i for i, (_, s, e) in enumerate(word_spans) if s == start and e == end), None)
             if idx is None:
                 return token
             left = " ".join(word_spans[i][0] for i in range(max(0, idx - context), idx))
             right = " ".join(word_spans[i][0] for i in range(idx + 1, min(len(word_spans), idx + 1 + context)))
-            return f"{left} **{token}** {right}"
+                        page_markers = list(re.finditer(r"/\d+/", full_text))
+            page = "?"
+            for marker in reversed(page_markers):
+                if marker.start() < start:
+                    page = marker.group().strip("/")
+                    break
+            return f"{left} **{token}** {right}  _(str. {page})"
 
         st.subheader(f"📄 Rezultati (KWIC): Ukupno: {len(matches)}")
         if matches:
             for m in matches:
-                st.markdown(get_kwic(m, tokens))
+                st.markdown(get_kwic(m, tokens, full_text=corpus))
         else:
             st.info("Nema rezultata za zadani upit.")
 
